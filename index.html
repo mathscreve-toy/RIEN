@@ -1,1 +1,68 @@
-<!doctype html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0c"><meta name="description" content="RIEN™ — l'application qui ne sert strictement à rien."><title>RIEN™</title><link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css"></head><body><main class="app-shell"><header class="topbar"><div class="brand">RIEN<span>™</span></div><button id="soundToggle" class="icon-button" aria-label="Activer ou couper le son">◌</button></header><section class="hero"><p class="eyebrow">OBJECTIF DU JOUR</p><h1>Ne rien accomplir.</h1><p id="message" class="message">Appuie. Il ne se passera rien d'important.</p><button id="nothingButton" class="nothing-button" aria-label="Appuyer pour ne rien faire"><span>RIEN</span></button><div class="count-block"><strong id="personalCount">0</strong><span>actions inutiles</span></div></section><section class="stats-grid"><article class="stat-card"><span class="stat-label">Série</span><strong><span id="streakCount">1</span> j</strong><small>de constance inutile</small></article><article class="stat-card"><span class="stat-label">Monde</span><strong id="worldCount">12 847 391</strong><small>clics probablement évitables</small></article></section><section class="panel"><span class="stat-label">BADGES</span><h2>Récompenses sans mérite</h2><div id="badges" class="badges"></div></section><section class="panel"><span class="stat-label">STATISTIQUES</span><h2>Des données qui ne changent rien</h2><div class="useless-list"><div><span>Productivité générée</span><strong>0 %</strong></div><div><span>Décisions importantes prises</span><strong>0</strong></div><div><span>Temps approximativement gaspillé</span><strong id="timeWasted">0 s</strong></div></div></section><section class="ad-slot"><span>PUBLICITÉ</span><strong>Votre publicité pourrait interrompre absolument rien ici.</strong><small>Emplacement prêt pour une régie publicitaire.</small></section><section class="premium-card"><div><span class="premium-pill">RIEN PREMIUM</span><h2>Payer pour avoir encore moins.</h2><p>Supprime la publicité et débloque des boutons inutilement élégants.</p></div><button id="premiumButton" class="secondary-button">Voir l'offre</button></section><section class="actions"><button id="shareButton" class="secondary-button">Partager mon inutilité</button><button id="resetButton" class="ghost-button">Tout remettre à rien</button></section><footer><p>RIEN™ — Aucun problème n'a été résolu pendant votre visite.</p></footer></main><dialog id="premiumDialog"><form method="dialog" class="dialog-card"><span class="premium-pill">RIEN PREMIUM</span><h2>Encore moins, mais mieux.</h2><p>Concept tarifaire :</p><ul><li>1,99 €/mois</li><li>9,99 € à vie</li><li>Publicités supprimées</li><li>Styles de bouton exclusifs</li></ul><button class="secondary-button">Fermer sans acheter</button></form></dialog><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#090a13" />
+  <meta name="description" content="RIEN™ — l'application qui transforme l'inutile en petit rituel social." />
+  <title>RIEN™</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="stars"></div>
+  <main class="app-shell">
+    <header class="mobile-topbar glassy">
+      <div class="time-fake">9:41</div>
+      <div class="top-icons">
+        <button id="soundToggle" class="mini-icon" aria-label="Activer le son">◌</button>
+        <button id="themeToggle" class="mini-icon" aria-label="Changer le style">✦</button>
+      </div>
+    </header>
+
+    <section id="screen-rien" class="screen active">
+      <div class="hero-card glassy">
+        <p class="eyebrow">L'art de ne rien faire.</p>
+        <h1>RIEN<span>™</span></h1>
+        <p id="message" class="message">Appuie. Il ne se passera rien d'important.</p>
+        <button id="nothingButton" class="nothing-button" aria-label="Appuyer pour faire rien"><span>RIEN</span></button>
+        <div class="main-counter"><small>Tu as fait RIEN</small><strong id="personalCount">0</strong><span>fois</span></div>
+        <div class="mini-stats">
+          <article><small>RIEN mondial</small><strong id="worldCount">7 254 631</strong><span>fois</span></article>
+          <article><small>Série du jour</small><strong id="streakCount">1</strong><span>jour</span></article>
+        </div>
+        <blockquote id="headlineQuote">« Ne rien faire, c'est déjà faire quelque chose. »</blockquote>
+      </div>
+    </section>
+
+    <section id="screen-stats" class="screen">
+      <div class="panel glassy">
+        <div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Statistiques</div><h2>Mon RIEN</h2></div><button id="shareStatsButton" class="mini-icon">⤴</button></div>
+        <div class="segmented"><button class="segment active">MOI</button><button class="segment">MONDE</button></div>
+        <div class="stats-highlight glassy-sub"><small>Total RIEN</small><strong id="statsTotalCount">0</strong><span>depuis toujours</span></div>
+        <div class="stats-grid-2"><article class="glassy-sub"><small>Cette semaine</small><strong id="weeklyCount">0</strong><span>fois</span></article><article class="glassy-sub"><small>Ce mois-ci</small><strong id="monthlyCount">0</strong><span>fois</span></article></div>
+        <div class="chart-card glassy-sub"><div class="chart-head"><h3>Ton évolution</h3><small>30 derniers jours</small></div><svg viewBox="0 0 300 140" class="line-chart"><defs><linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#bb55ff"/></linearGradient></defs><path d="M0 125 L30 110 L60 112 L90 86 L120 89 L150 77 L180 82 L210 68 L240 74 L270 48 L300 18" fill="none" stroke="url(#lineGlow)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="distribution glassy-sub"><div class="donut"></div><div class="legend-list"><div><span><span class="dot morning"></span>Matin</span><strong>12%</strong></div><div><span><span class="dot noon"></span>Après-midi</span><strong>37%</strong></div><div><span><span class="dot eve"></span>Soir</span><strong>28%</strong></div><div><span><span class="dot night"></span>Nuit</span><strong>23%</strong></div></div></div>
+      </div>
+    </section>
+
+    <section id="screen-phrases" class="screen"><div class="panel glassy"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Phrases du RIEN</div><h2>Petites phrases</h2></div><button id="newQuoteButton" class="mini-icon">♥</button></div><div id="quoteList" class="quote-list"></div></div></section>
+
+    <section id="screen-badges" class="screen"><div class="panel glassy"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Badges</div><h2>Récompenses absurdes</h2></div></div><div id="badges" class="badge-row"></div><div class="badge-goals glassy-sub"><h3>Badges à débloquer</h3><div id="badgeGoals"></div></div></div></section>
+
+    <section id="screen-premium" class="screen"><div class="panel glassy premium-panel"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">RIEN Premium</div><h2>Ne rien faire avec style.</h2></div></div><div class="premium-crown">♛</div><p class="premium-text">Débloque des thèmes, retire la publicité et soutiens l'art du vide.</p><ul class="premium-list"><li>Thèmes exclusifs</li><li>Phrases premium</li><li>Badges secrets</li><li>Suppression des pubs</li></ul><div class="price-stack"><button class="price-button highlighted">2,99 € / mois</button><button class="price-button">19,99 € / an</button></div></div></section>
+
+    <section id="screen-communaute" class="screen"><div class="panel glassy"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Communauté</div><h2>Ton cercle du RIEN</h2></div><button id="addFriendButton" class="mini-icon">＋</button></div><div class="community-intro glassy-sub"><strong>Défie tes amis à ne rien faire.</strong><p>Crée ton mini-club, compare vos compteurs et partage vos exploits inutiles.</p></div><div class="friends-head"><h3>Mes amis</h3><button id="inviteButton" class="chip-button">Inviter</button></div><div id="friendsList" class="friends-list"></div><div class="community-feed glassy-sub"><div class="friends-head"><h3>Mur du RIEN</h3><button id="postNothingButton" class="chip-button">Publier</button></div><div id="feedList" class="feed-list"></div></div></div></section>
+
+    <section class="bottom-dock glassy">
+      <button class="nav-item active" data-target="rien"><span>◉</span><small>RIEN</small></button><button class="nav-item" data-target="stats"><span>▥</span><small>Stats</small></button><button class="nav-item" data-target="phrases"><span>❝</span><small>Phrases</small></button><button class="nav-item" data-target="badges"><span>✦</span><small>Badges</small></button><button class="nav-item" data-target="premium"><span>♛</span><small>Premium</small></button><button class="nav-item" data-target="communaute"><span>☻</span><small>Amis</small></button>
+    </section>
+
+    <section class="bottom-share glassy"><div><div class="stat-label">Partager</div><strong>Diffuse ton exploit inutile</strong></div><div class="social-actions"><button class="social-btn insta" data-network="Instagram">IG</button><button class="social-btn story" data-network="Story">ST</button><button class="social-btn whats" data-network="WhatsApp">WA</button><button class="social-btn more" data-network="Plus">＋</button></div></section>
+
+    <section class="desktop-info"><article class="info-card glassy"><h3>À quoi sert RIEN™ ?</h3><p>RIEN™ ne sert à rien. Et c'est exactement le but.</p><p>C'est un jeu absurde et social où tu cliques pour ne rien faire, tu collectionnes des badges inutiles, tu partages tes exploits et tu retrouves tes amis pour comparer vos compteurs.</p></article><article class="info-card glassy"><h3>Fonctionnalités clés</h3><ul><li>Un clic, un RIEN</li><li>Compteur personnel & mondial</li><li>Série quotidienne</li><li>Petites phrases du RIEN</li><li>Partage réseaux sociaux</li><li>Communauté entre amis</li><li>Mode sombre immersif</li><li>Fonctionne hors ligne</li></ul></article></section>
+  </main>
+  <dialog id="shareDialog"><form method="dialog" class="dialog-card"><h3>Partager ton RIEN</h3><p id="sharePreviewText">J'ai fait RIEN et j'en suis fier.</p><div class="dialog-actions"><button value="cancel" class="ghost-button">Fermer</button><button id="nativeShareButton" value="default" class="secondary-button">Partager</button></div></form></dialog>
+  <script src="app.js"></script>
+</body>
+</html>
