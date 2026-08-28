@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#090a13" />
-  <meta name="description" content="RIEN™ — l'application qui transforme l'inutile en petit rituel social." />
+  <meta name="description" content="RIEN™ — l'application sociale qui ne sert à rien." />
   <title>RIEN™</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
@@ -15,6 +15,7 @@
     <header class="mobile-topbar glassy">
       <div class="time-fake">9:41</div>
       <div class="top-icons">
+        <button id="accountButton" class="account-pill">Se connecter</button>
         <button id="soundToggle" class="mini-icon" aria-label="Activer le son">◌</button>
         <button id="themeToggle" class="mini-icon" aria-label="Changer le style">✦</button>
       </div>
@@ -35,16 +36,14 @@
       </div>
     </section>
 
-    <section id="screen-stats" class="screen">
-      <div class="panel glassy">
-        <div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Statistiques</div><h2>Mon RIEN</h2></div><button id="shareStatsButton" class="mini-icon">⤴</button></div>
-        <div class="segmented"><button class="segment active">MOI</button><button class="segment">MONDE</button></div>
-        <div class="stats-highlight glassy-sub"><small>Total RIEN</small><strong id="statsTotalCount">0</strong><span>depuis toujours</span></div>
-        <div class="stats-grid-2"><article class="glassy-sub"><small>Cette semaine</small><strong id="weeklyCount">0</strong><span>fois</span></article><article class="glassy-sub"><small>Ce mois-ci</small><strong id="monthlyCount">0</strong><span>fois</span></article></div>
-        <div class="chart-card glassy-sub"><div class="chart-head"><h3>Ton évolution</h3><small>30 derniers jours</small></div><svg viewBox="0 0 300 140" class="line-chart"><defs><linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#bb55ff"/></linearGradient></defs><path d="M0 125 L30 110 L60 112 L90 86 L120 89 L150 77 L180 82 L210 68 L240 74 L270 48 L300 18" fill="none" stroke="url(#lineGlow)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="distribution glassy-sub"><div class="donut"></div><div class="legend-list"><div><span><span class="dot morning"></span>Matin</span><strong>12%</strong></div><div><span><span class="dot noon"></span>Après-midi</span><strong>37%</strong></div><div><span><span class="dot eve"></span>Soir</span><strong>28%</strong></div><div><span><span class="dot night"></span>Nuit</span><strong>23%</strong></div></div></div>
-      </div>
-    </section>
+    <section id="screen-stats" class="screen"><div class="panel glassy">
+      <div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Statistiques</div><h2>Mon RIEN</h2></div><button id="shareStatsButton" class="mini-icon">⤴</button></div>
+      <div class="segmented"><button class="segment active">MOI</button><button class="segment">MONDE</button></div>
+      <div class="stats-highlight glassy-sub"><small>Total RIEN</small><strong id="statsTotalCount">0</strong><span>depuis toujours</span></div>
+      <div class="stats-grid-2"><article class="glassy-sub"><small>Cette semaine</small><strong id="weeklyCount">0</strong><span>fois</span></article><article class="glassy-sub"><small>Ce mois-ci</small><strong id="monthlyCount">0</strong><span>fois</span></article></div>
+      <div class="chart-card glassy-sub"><div class="chart-head"><h3>Ton évolution</h3><small>30 derniers jours</small></div><svg viewBox="0 0 300 140" class="line-chart"><defs><linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#bb55ff"/></linearGradient></defs><path d="M0 125 L30 110 L60 112 L90 86 L120 89 L150 77 L180 82 L210 68 L240 74 L270 48 L300 18" fill="none" stroke="url(#lineGlow)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="distribution glassy-sub"><div class="donut"></div><div class="legend-list"><div><span><span class="dot morning"></span>Matin</span><strong>12%</strong></div><div><span><span class="dot noon"></span>Après-midi</span><strong>37%</strong></div><div><span><span class="dot eve"></span>Soir</span><strong>28%</strong></div><div><span><span class="dot night"></span>Nuit</span><strong>23%</strong></div></div></div>
+    </div></section>
 
     <section id="screen-phrases" class="screen"><div class="panel glassy"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Phrases du RIEN</div><h2>Petites phrases</h2></div><button id="newQuoteButton" class="mini-icon">♥</button></div><div id="quoteList" class="quote-list"></div></div></section>
 
@@ -52,17 +51,25 @@
 
     <section id="screen-premium" class="screen"><div class="panel glassy premium-panel"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">RIEN Premium</div><h2>Ne rien faire avec style.</h2></div></div><div class="premium-crown">♛</div><p class="premium-text">Débloque des thèmes, retire la publicité et soutiens l'art du vide.</p><ul class="premium-list"><li>Thèmes exclusifs</li><li>Phrases premium</li><li>Badges secrets</li><li>Suppression des pubs</li></ul><div class="price-stack"><button class="price-button highlighted">2,99 € / mois</button><button class="price-button">19,99 € / an</button></div></div></section>
 
-    <section id="screen-communaute" class="screen"><div class="panel glassy"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Communauté</div><h2>Ton cercle du RIEN</h2></div><button id="addFriendButton" class="mini-icon">＋</button></div><div class="community-intro glassy-sub"><strong>Défie tes amis à ne rien faire.</strong><p>Crée ton mini-club, compare vos compteurs et partage vos exploits inutiles.</p></div><div class="friends-head"><h3>Mes amis</h3><button id="inviteButton" class="chip-button">Inviter</button></div><div id="friendsList" class="friends-list"></div><div class="community-feed glassy-sub"><div class="friends-head"><h3>Mur du RIEN</h3><button id="postNothingButton" class="chip-button">Publier</button></div><div id="feedList" class="feed-list"></div></div></div></section>
+    <section id="screen-communaute" class="screen"><div class="panel glassy">
+      <div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Communauté</div><h2>Ton cercle du RIEN</h2></div><button id="addFriendButton" class="mini-icon">＋</button></div>
+      <div class="community-intro glassy-sub"><strong>Défie tes amis à ne rien faire.</strong><p id="communityHint">Connecte-toi pour retrouver une vraie communauté partagée.</p></div>
+      <div class="friends-head"><h3>Mes amis</h3><button id="inviteButton" class="chip-button">Inviter</button></div><div id="friendsList" class="friends-list"></div>
+      <div class="community-feed glassy-sub"><div class="friends-head"><h3>Mur du RIEN</h3><button id="postNothingButton" class="chip-button">Publier</button></div><div id="feedList" class="feed-list"></div></div>
+    </div></section>
 
-    <section class="bottom-dock glassy">
-      <button class="nav-item active" data-target="rien"><span>◉</span><small>RIEN</small></button><button class="nav-item" data-target="stats"><span>▥</span><small>Stats</small></button><button class="nav-item" data-target="phrases"><span>❝</span><small>Phrases</small></button><button class="nav-item" data-target="badges"><span>✦</span><small>Badges</small></button><button class="nav-item" data-target="premium"><span>♛</span><small>Premium</small></button><button class="nav-item" data-target="communaute"><span>☻</span><small>Amis</small></button>
-    </section>
+    <section class="bottom-dock glassy"><button class="nav-item active" data-target="rien"><span>◉</span><small>RIEN</small></button><button class="nav-item" data-target="stats"><span>▥</span><small>Stats</small></button><button class="nav-item" data-target="phrases"><span>❝</span><small>Phrases</small></button><button class="nav-item" data-target="badges"><span>✦</span><small>Badges</small></button><button class="nav-item" data-target="premium"><span>♛</span><small>Premium</small></button><button class="nav-item" data-target="communaute"><span>☻</span><small>Amis</small></button></section>
 
     <section class="bottom-share glassy"><div><div class="stat-label">Partager</div><strong>Diffuse ton exploit inutile</strong></div><div class="social-actions"><button class="social-btn insta" data-network="Instagram">IG</button><button class="social-btn story" data-network="Story">ST</button><button class="social-btn whats" data-network="WhatsApp">WA</button><button class="social-btn more" data-network="Plus">＋</button></div></section>
 
-    <section class="desktop-info"><article class="info-card glassy"><h3>À quoi sert RIEN™ ?</h3><p>RIEN™ ne sert à rien. Et c'est exactement le but.</p><p>C'est un jeu absurde et social où tu cliques pour ne rien faire, tu collectionnes des badges inutiles, tu partages tes exploits et tu retrouves tes amis pour comparer vos compteurs.</p></article><article class="info-card glassy"><h3>Fonctionnalités clés</h3><ul><li>Un clic, un RIEN</li><li>Compteur personnel & mondial</li><li>Série quotidienne</li><li>Petites phrases du RIEN</li><li>Partage réseaux sociaux</li><li>Communauté entre amis</li><li>Mode sombre immersif</li><li>Fonctionne hors ligne</li></ul></article></section>
+    <section class="desktop-info"><article class="info-card glassy"><h3>À quoi sert RIEN™ ?</h3><p>RIEN™ ne sert à rien. Et c'est exactement le but.</p><p>C'est un jeu absurde et social où tu cliques pour ne rien faire, tu collectionnes des badges inutiles, tu partages tes exploits et tu retrouves tes amis pour comparer vos compteurs.</p></article><article class="info-card glassy"><h3>Fonctionnalités clés</h3><ul><li>Un clic, un RIEN</li><li>Compteur personnel & mondial partagé</li><li>Compte utilisateur</li><li>Amis et mur communautaire</li><li>Partage réseaux sociaux</li><li>PWA et hors ligne</li></ul></article></section>
   </main>
+
+  <dialog id="authDialog"><form id="authForm" class="dialog-card"><div class="stat-label">COMPTE RIEN</div><h3>Entre dans le vide.</h3><input id="displayNameInput" class="text-input" type="text" placeholder="Pseudo (inscription)" autocomplete="nickname"><input id="emailInput" class="text-input" type="email" placeholder="Email" autocomplete="email" required><input id="passwordInput" class="text-input" type="password" placeholder="Mot de passe" autocomplete="current-password" minlength="6" required><p id="authMessage" class="form-message"></p><div class="auth-actions"><button type="button" id="loginButton" class="secondary-button">Connexion</button><button type="button" id="signupButton" class="chip-button">Créer un compte</button><button type="button" id="logoutButton" class="ghost-button hidden">Déconnexion</button><button type="button" id="closeAuthButton" class="ghost-button">Fermer</button></div></form></dialog>
+
   <dialog id="shareDialog"><form method="dialog" class="dialog-card"><h3>Partager ton RIEN</h3><p id="sharePreviewText">J'ai fait RIEN et j'en suis fier.</p><div class="dialog-actions"><button value="cancel" class="ghost-button">Fermer</button><button id="nativeShareButton" value="default" class="secondary-button">Partager</button></div></form></dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
 </html>
