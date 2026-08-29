@@ -1,75 +1,42 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#090a13" />
-  <meta name="description" content="RIEN™ — l'application sociale qui ne sert à rien." />
-  <title>RIEN™</title>
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090a13"><meta name="description" content="RIEN™ — le réseau social où ne rien faire devient un exploit."><meta name="apple-mobile-web-app-capable" content="yes"><title>RIEN™</title>
+  <link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="v4.css">
 </head>
-<body>
-  <div class="stars"></div>
-  <main class="app-shell">
-    <header class="mobile-topbar glassy">
-      <div class="time-fake">9:41</div>
-      <div class="top-icons">
-        <button id="accountButton" class="account-pill">Se connecter</button>
-        <button id="soundToggle" class="mini-icon" aria-label="Activer le son">◌</button>
-        <button id="themeToggle" class="mini-icon" aria-label="Changer le style">✦</button>
-      </div>
-    </header>
+<body><div class="stars"></div><main class="app-shell">
+<header class="mobile-topbar topbar glassy"><div><strong>RIEN™</strong></div><div class="top-icons"><span id="verifiedBadge" class="verified hidden">✓ Vérifié</span><button id="accountButton" class="account-pill">Créer un compte</button></div></header>
 
-    <section id="screen-rien" class="screen active">
-      <div class="hero-card glassy">
-        <p class="eyebrow">L'art de ne rien faire.</p>
-        <h1>RIEN<span>™</span></h1>
-        <p id="message" class="message">Appuie. Il ne se passera rien d'important.</p>
-        <button id="nothingButton" class="nothing-button" aria-label="Appuyer pour faire rien"><span>RIEN</span></button>
-        <div class="main-counter"><small>Tu as fait RIEN</small><strong id="personalCount">0</strong><span>fois</span></div>
-        <div class="mini-stats">
-          <article><small>RIEN mondial</small><strong id="worldCount">7 254 631</strong><span>fois</span></article>
-          <article><small>Série du jour</small><strong id="streakCount">1</strong><span>jour</span></article>
-        </div>
-        <blockquote id="headlineQuote">« Ne rien faire, c'est déjà faire quelque chose. »</blockquote>
-      </div>
-    </section>
+<section id="screen-rien" class="screen active">
+  <div class="hero-card hero glassy"><p class="eyebrow">L'ART DE NE RIEN FAIRE</p><h1>RIEN<span>™</span></h1><p id="message" class="message">Appuie. Ton exploit sera enregistré.</p>
+    <div class="button-stage"><div class="orbit one"></div><div class="orbit two"></div><button id="nothingButton" class="nothing-button"><span>RIEN</span><small>APPUYER</small></button></div>
+    <div class="counter-block"><span>Tu as fait RIEN</span><strong id="personalCount">0</strong><small>fois</small></div>
+    <div class="home-stats"><article class="metric"><span class="metric-icon">◎</span><div><small>RIEN mondial</small><strong id="worldCount">7 254 631</strong></div></article><article class="metric"><span class="metric-icon">⌁</span><div><small>Série</small><strong><span id="streakCount">1</span> jours</strong></div></article></div>
+    <blockquote id="headlineQuote">« Ne rien faire, c'est déjà faire quelque chose. »</blockquote><button id="heroShareButton" class="secondary-button">Partager mon RIEN</button>
+  </div>
+  <aside id="adSlot" class="ad-slot glassy"><span>PUBLICITÉ</span><div id="adPlaceholder"><strong>Un espace pour financer le RIEN.</strong><small>La régie publicitaire apparaîtra ici.</small></div></aside>
+</section>
 
-    <section id="screen-stats" class="screen"><div class="panel glassy">
-      <div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Statistiques</div><h2>Mon RIEN</h2></div><button id="shareStatsButton" class="mini-icon">⤴</button></div>
-      <div class="segmented"><button class="segment active">MOI</button><button class="segment">MONDE</button></div>
-      <div class="stats-highlight glassy-sub"><small>Total RIEN</small><strong id="statsTotalCount">0</strong><span>depuis toujours</span></div>
-      <div class="stats-grid-2"><article class="glassy-sub"><small>Cette semaine</small><strong id="weeklyCount">0</strong><span>fois</span></article><article class="glassy-sub"><small>Ce mois-ci</small><strong id="monthlyCount">0</strong><span>fois</span></article></div>
-      <div class="chart-card glassy-sub"><div class="chart-head"><h3>Ton évolution</h3><small>30 derniers jours</small></div><svg viewBox="0 0 300 140" class="line-chart"><defs><linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#bb55ff"/></linearGradient></defs><path d="M0 125 L30 110 L60 112 L90 86 L120 89 L150 77 L180 82 L210 68 L240 74 L270 48 L300 18" fill="none" stroke="url(#lineGlow)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div class="distribution glassy-sub"><div class="donut"></div><div class="legend-list"><div><span><span class="dot morning"></span>Matin</span><strong>12%</strong></div><div><span><span class="dot noon"></span>Après-midi</span><strong>37%</strong></div><div><span><span class="dot eve"></span>Soir</span><strong>28%</strong></div><div><span><span class="dot night"></span>Nuit</span><strong>23%</strong></div></div></div>
-    </div></section>
+<section id="screen-stats" class="screen"><div class="panel glassy"><div class="screen-title"><div><div class="stat-label">STATISTIQUES</div><h2>Ton RIEN en chiffres</h2></div><button class="mini-icon" data-go="rien">×</button></div><div class="stats-total"><small>Total RIEN</small><strong id="statsTotalCount">0</strong><span>depuis toujours</span></div><div class="stats-duo"><article><small>Cette semaine</small><strong id="weeklyCount">0</strong></article><article><small>Ce mois-ci</small><strong id="monthlyCount">0</strong></article></div><article class="chart-box"><div class="section-head"><h3>Ton évolution</h3><span>30 derniers jours</span></div><svg viewBox="0 0 400 150" class="line-chart"><path d="M0 132 C35 125 40 105 75 110 S130 92 160 98 S220 72 250 80 S310 60 335 66 S370 32 400 26" fill="none" stroke="url(#grad)" stroke-width="5" stroke-linecap="round"/><defs><linearGradient id="grad"><stop stop-color="#6f59ff"/><stop offset="1" stop-color="#d875ff"/></linearGradient></defs></svg></article><article class="rank-card"><div><small>Classement mondial</small><strong># —</strong></div><button id="shareStatsButton" class="chip-button">Partager</button></article></div></section>
 
-    <section id="screen-phrases" class="screen"><div class="panel glassy"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Phrases du RIEN</div><h2>Petites phrases</h2></div><button id="newQuoteButton" class="mini-icon">♥</button></div><div id="quoteList" class="quote-list"></div></div></section>
+<section id="screen-phrases" class="screen"><div class="panel glassy"><div class="screen-title"><div><div class="stat-label">PHRASES DU RIEN</div><h2>Philosophiquement nulles</h2></div><button class="mini-icon" data-go="rien">×</button></div><div id="quoteList" class="quote-list"></div></div></section>
 
-    <section id="screen-badges" class="screen"><div class="panel glassy"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Badges</div><h2>Récompenses absurdes</h2></div></div><div id="badges" class="badge-row"></div><div class="badge-goals glassy-sub"><h3>Badges à débloquer</h3><div id="badgeGoals"></div></div></div></section>
+<section id="screen-badges" class="screen"><div class="panel glassy"><div class="screen-title"><div><div class="stat-label">BADGES</div><h2>Récompenses inutiles</h2></div><button class="mini-icon" data-go="rien">×</button></div><div id="badges" class="badge-row"></div><div id="badgeGoals" class="goals-list"></div></div></section>
 
-    <section id="screen-premium" class="screen"><div class="panel glassy premium-panel"><div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">RIEN Premium</div><h2>Ne rien faire avec style.</h2></div></div><div class="premium-crown">♛</div><p class="premium-text">Débloque des thèmes, retire la publicité et soutiens l'art du vide.</p><ul class="premium-list"><li>Thèmes exclusifs</li><li>Phrases premium</li><li>Badges secrets</li><li>Suppression des pubs</li></ul><div class="price-stack"><button class="price-button highlighted">2,99 € / mois</button><button class="price-button">19,99 € / an</button></div></div></section>
+<section id="screen-community" class="screen"><div class="panel glassy"><div class="screen-title"><div><div class="stat-label">COMMUNAUTÉ DU RIEN</div><h2>Ne rien faire ensemble</h2></div><button class="mini-icon" data-go="rien">×</button></div>
+<article class="profile-strip"><div class="avatar big" id="communityAvatar">R</div><div><strong id="communityUserName">Anonyme du RIEN</strong><small id="communityHint">Connecte-toi pour rejoindre le vide collectif.</small></div><button id="inviteButton" class="chip-button">Inviter</button></article>
+<div class="community-actions"><button id="createCommunityButton" class="action-card"><span>＋</span><strong>Créer une communauté</strong><small>Ton cercle du RIEN</small></button><button id="joinCommunityButton" class="action-card"><span>⌁</span><strong>Rejoindre</strong><small>Avec un code d'invitation</small></button></div>
+<div class="section-head"><h3>Mes communautés</h3><span id="communityCount">0</span></div><div id="communitiesList" class="communities-list"></div><div class="section-head"><h3>Mes amis</h3><button id="addFriendButton" class="back-ghost">Ajouter</button></div><div id="friendsList" class="friends-list"></div><article class="feed glassy-sub"><div class="section-head"><h3>Mur du RIEN</h3><button id="postNothingButton" class="chip-button">Publier</button></div><div id="feedList"></div></article></div></section>
 
-    <section id="screen-communaute" class="screen"><div class="panel glassy">
-      <div class="panel-head"><button class="back-ghost" data-go="rien">‹</button><div><div class="stat-label">Communauté</div><h2>Ton cercle du RIEN</h2></div><button id="addFriendButton" class="mini-icon">＋</button></div>
-      <div class="community-intro glassy-sub"><strong>Défie tes amis à ne rien faire.</strong><p id="communityHint">Connecte-toi pour retrouver une vraie communauté partagée.</p></div>
-      <div class="friends-head"><h3>Mes amis</h3><button id="inviteButton" class="chip-button">Inviter</button></div><div id="friendsList" class="friends-list"></div>
-      <div class="community-feed glassy-sub"><div class="friends-head"><h3>Mur du RIEN</h3><button id="postNothingButton" class="chip-button">Publier</button></div><div id="feedList" class="feed-list"></div></div>
-    </div></section>
+<section id="screen-premium" class="screen"><div class="panel premium-panel glassy"><div class="screen-title"><div><div class="stat-label">RIEN PREMIUM</div><h2>Ne rien faire avec style.</h2></div><button class="mini-icon" data-go="rien">×</button></div><div class="premium-crown">♛</div><p class="premium-lead">Plus de style. Plus de communauté. Et surtout : plus aucune publicité.</p><div class="premium-features"><div><span>✓</span><p><strong>0 publicité</strong><small>Le vide sans interruption</small></p></div><div><span>✓</span><p><strong>Thèmes exclusifs</strong><small>Nébuleuse, Or, Ultra-noir</small></p></div><div><span>✓</span><p><strong>Badges Premium</strong><small>Encore plus inutiles</small></p></div><div><span>✓</span><p><strong>Communautés avancées</strong><small>Plus de groupes et de personnalisation</small></p></div></div><div class="plans"><button class="plan-card selected" data-plan="monthly"><span>Mensuel</span><strong>2,99 €</strong><small>/ mois</small></button><button class="plan-card" data-plan="annual"><span>Annuel</span><strong>19,99 €</strong><small>/ an</small><b>−44 %</b></button></div><button id="checkoutButton" class="gold-button">Passer à RIEN Premium</button><small id="paymentNote" class="fineprint">Paiement sécurisé. Résiliable à tout moment.</small></div></section>
 
-    <section class="bottom-dock glassy"><button class="nav-item active" data-target="rien"><span>◉</span><small>RIEN</small></button><button class="nav-item" data-target="stats"><span>▥</span><small>Stats</small></button><button class="nav-item" data-target="phrases"><span>❝</span><small>Phrases</small></button><button class="nav-item" data-target="badges"><span>✦</span><small>Badges</small></button><button class="nav-item" data-target="premium"><span>♛</span><small>Premium</small></button><button class="nav-item" data-target="communaute"><span>☻</span><small>Amis</small></button></section>
+<nav class="bottom-dock glassy"><button class="nav nav-item active" data-target="rien"><span>◉</span><small>RIEN</small></button><button class="nav nav-item" data-target="stats"><span>▥</span><small>Stats</small></button><button class="nav nav-item" data-target="phrases"><span>❝</span><small>Phrases</small></button><button class="nav nav-item" data-target="badges"><span>✦</span><small>Badges</small></button><button class="nav nav-item" data-target="community"><span>◎</span><small>Communauté</small></button><button class="nav nav-item" data-target="premium"><span>♛</span><small>Premium</small></button></nav>
+</main>
 
-    <section class="bottom-share glassy"><div><div class="stat-label">Partager</div><strong>Diffuse ton exploit inutile</strong></div><div class="social-actions"><button class="social-btn insta" data-network="Instagram">IG</button><button class="social-btn story" data-network="Story">ST</button><button class="social-btn whats" data-network="WhatsApp">WA</button><button class="social-btn more" data-network="Plus">＋</button></div></section>
+<dialog id="authDialog"><form id="authForm" class="dialog-card"><button type="button" id="closeAuthButton" class="dialog-close">×</button><div class="stat-label">COMPTE RIEN™</div><h3>Entre officiellement dans le vide.</h3><div id="signupFields"><label>Pseudo<input id="displayNameInput" class="text-input" type="text" minlength="3" maxlength="24" placeholder="Ex. MaîtreDuVide"></label></div><label>Email<input id="emailInput" class="text-input" type="email" placeholder="toi@email.fr"></label><label>Mot de passe<input id="passwordInput" class="text-input" type="password" minlength="8" placeholder="8 caractères minimum"></label><label id="confirmPasswordLabel">Confirmer le mot de passe<input id="confirmPasswordInput" class="text-input" type="password" minlength="8"></label><label id="termsLabel" class="terms"><input id="termsInput" type="checkbox"><span>J'accepte les conditions et la politique de confidentialité.</span></label><p id="authMessage" class="form-message"></p><div class="auth-actions"><button type="button" id="signupButton" class="chip-button">Créer mon compte</button><button type="button" id="loginButton" class="secondary-button">J'ai déjà un compte</button><button type="button" id="resendButton" class="back-ghost hidden">Renvoyer l'email de validation</button><button type="button" id="logoutButton" class="ghost-button hidden">Se déconnecter</button></div></form></dialog>
 
-    <section class="desktop-info"><article class="info-card glassy"><h3>À quoi sert RIEN™ ?</h3><p>RIEN™ ne sert à rien. Et c'est exactement le but.</p><p>C'est un jeu absurde et social où tu cliques pour ne rien faire, tu collectionnes des badges inutiles, tu partages tes exploits et tu retrouves tes amis pour comparer vos compteurs.</p></article><article class="info-card glassy"><h3>Fonctionnalités clés</h3><ul><li>Un clic, un RIEN</li><li>Compteur personnel & mondial partagé</li><li>Compte utilisateur</li><li>Amis et mur communautaire</li><li>Partage réseaux sociaux</li><li>PWA et hors ligne</li></ul></article></section>
-  </main>
+<dialog id="shareDialog"><div class="dialog-card"><button id="closeShareButton" class="dialog-close">×</button><div class="stat-label">PARTAGER</div><h3>Diffuse ton exploit inutile.</h3><div class="share-preview"><strong>J'ai fait RIEN.</strong><p id="sharePreviewText"></p></div><div class="social-grid"><button class="social instagram" data-share="instagram"><img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram"><span>Instagram</span></button><button class="social story" data-share="story"><img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Story"><span>Story</span></button><button class="social whatsapp" data-share="whatsapp"><img src="https://cdn.simpleicons.org/whatsapp/ffffff" alt="WhatsApp"><span>WhatsApp</span></button><button class="social facebook" data-share="facebook"><img src="https://cdn.simpleicons.org/facebook/ffffff" alt="Facebook"><span>Facebook</span></button><button class="social tiktok" data-share="tiktok"><img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok"><span>TikTok</span></button><button class="social copy" data-share="copy"><span>⧉</span><span>Copier</span></button></div><button id="nativeShareButton" class="secondary-button">Partager avec une autre app</button></div></dialog>
 
-  <dialog id="authDialog"><form id="authForm" class="dialog-card"><div class="stat-label">COMPTE RIEN</div><h3>Entre dans le vide.</h3><input id="displayNameInput" class="text-input" type="text" placeholder="Pseudo (inscription)" autocomplete="nickname"><input id="emailInput" class="text-input" type="email" placeholder="Email" autocomplete="email" required><input id="passwordInput" class="text-input" type="password" placeholder="Mot de passe" autocomplete="current-password" minlength="6" required><p id="authMessage" class="form-message"></p><div class="auth-actions"><button type="button" id="loginButton" class="secondary-button">Connexion</button><button type="button" id="signupButton" class="chip-button">Créer un compte</button><button type="button" id="logoutButton" class="ghost-button hidden">Déconnexion</button><button type="button" id="closeAuthButton" class="ghost-button">Fermer</button></div></form></dialog>
+<dialog id="communityDialog"><form id="communityForm" class="dialog-card"><button type="button" id="closeCommunityDialog" class="dialog-close">×</button><div class="stat-label">COMMUNAUTÉ</div><h3 id="communityDialogTitle">Créer une communauté</h3><div id="communityCreateFields"><label>Nom<input id="communityNameInput" class="text-input" maxlength="48" placeholder="Les Inactifs"></label><label>Description<textarea id="communityDescriptionInput" class="text-input" maxlength="240" placeholder="Une communauté dédiée au vide."></textarea></label></div><label id="communityCodeLabel" class="hidden">Code d'invitation<input id="communityCodeInput" class="text-input" maxlength="12" placeholder="AB12CD34"></label><p id="communityMessage" class="form-message"></p><button type="submit" id="communitySubmitButton" class="chip-button">Créer</button></form></dialog>
 
-  <dialog id="shareDialog"><form method="dialog" class="dialog-card"><h3>Partager ton RIEN</h3><p id="sharePreviewText">J'ai fait RIEN et j'en suis fier.</p><div class="dialog-actions"><button value="cancel" class="ghost-button">Fermer</button><button id="nativeShareButton" value="default" class="secondary-button">Partager</button></div></form></dialog>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app-v4.js"></script></body></html>
