@@ -1,1 +1,0 @@
-window.RIEN_CONFIG={paymentLinks:{monthly:'',annual:''},ads:{provider:'adsense',clientId:'',slotId:''}};

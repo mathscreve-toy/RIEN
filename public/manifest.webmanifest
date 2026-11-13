@@ -1,0 +1,12 @@
+{
+  "name": "Vigi Sector",
+  "short_name": "Vigi",
+  "description": "Gestion des secteurs et des plages du SDIS 76",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7faf8",
+  "theme_color": "#f4d36b",
+  "icons": [
+    {"src":"/vigi-logo.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

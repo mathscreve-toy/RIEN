@@ -1,21 +1,34 @@
-# RIEN™
+# Vigi Sector
 
-RIEN™ est une web-app volontairement inutile : un grand bouton, des compteurs, des séries quotidiennes, des badges absurdes et des statistiques qui ne changent rien.
+Application de gestion des secteurs, plages et disponibilités des équipes LPS.
 
-## V1
+## Production
 
-- Interface mobile-first
-- Compteur personnel persistant sur l'appareil
-- Compteur mondial simulé
-- Série quotidienne
-- Badges progressifs
-- Messages absurdes aléatoires
-- Son et vibration facultatifs
-- Partage natif
-- Emplacement publicitaire préparé
-- Présentation RIEN Premium simulée
-- PWA installable et fonctionnement hors ligne
+- Frontend React/Vite déployé sur Netlify.
+- Authentification et données hébergées sur Supabase.
+- Connexion réservée aux adresses `@sdis76.fr`.
+- Première connexion par lien sécurisé, puis définition du mot de passe.
+- Réinitialisation de mot de passe et sessions multi-appareils.
+- Export CSV des disponibilités, compatible Excel.
 
-## Monétisation prévue
+## Variables de build
 
-La V1 ne charge encore aucune régie publicitaire ni paiement réel. Les emplacements sont prévus pour intégrer ensuite une solution publicitaire et une offre Premium sans modifier le concept central.
+Copier `.env.example` vers `.env` et renseigner :
+
+```env
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_PUBLISHABLE_KEY=...
+```
+
+Ne jamais utiliser de clé `service_role` dans le frontend.
+
+## Développement
+
+```bash
+npm install
+npm run dev
+```
+
+## Déploiement
+
+La configuration Netlify se trouve dans `netlify.toml`. La migration initiale Supabase est versionnée dans `supabase/migrations`.
