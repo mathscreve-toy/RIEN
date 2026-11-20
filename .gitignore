@@ -4,4 +4,6 @@ dist
 .env.*
 !.env.example
 .netlify
+supabase/.temp
+*.tsbuildinfo
 .DS_Store

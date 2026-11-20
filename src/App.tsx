@@ -1,7 +1,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
-  Bell, CalendarDays, ChevronRight, Download, Eye, EyeOff, KeyRound,
+  Bell, CalendarDays, CalendarRange, ChevronRight, Download, Eye, EyeOff, KeyRound,
   LifeBuoy, LogOut, MapPinned, Menu, Plus, RefreshCw, Search,
   ShieldCheck, SlidersHorizontal, Users, Waves, X,
 } from 'lucide-react'
@@ -20,7 +20,24 @@ type Profile = {
 }
 
 type Sector = { id: string; name: string; description: string | null }
-type Beach = { id: string; sector_id: string; name: string; location: string | null; required_crew: number; promenade_places: number }
+type Beach = {
+  id: string
+  sector_id: string
+  name: string
+  location: string | null
+  weekday_required_crew: number
+  weekend_required_crew: number
+  chief_positions: number
+}
+type StaffingPeriod = {
+  id: string
+  beach_id: string
+  label: string | null
+  start_on: string
+  end_on: string
+  required_crew: number
+  chief_positions: number
+}
 
 const roleLabels: Record<Role, string> = {
   admin: 'Administrateur', chief: 'Chef de secteur', assistant: 'Adjoint', crew: 'Équipier',
@@ -142,6 +159,7 @@ function AppShell({session,profile,onProfileRefresh}:{session:Session;profile:Pr
   const [mobileMenu,setMobileMenu]=useState(false)
   const [sectors,setSectors]=useState<Sector[]>([])
   const [beaches,setBeaches]=useState<Beach[]>([])
+  const [staffingPeriods,setStaffingPeriods]=useState<StaffingPeriod[]>([])
   const [profiles,setProfiles]=useState<Profile[]>([])
   const [campaignCount,setCampaignCount]=useState(0)
   const [assignmentCount,setAssignmentCount]=useState(0)
@@ -149,20 +167,34 @@ function AppShell({session,profile,onProfileRefresh}:{session:Session;profile:Pr
   const [toast,setToast]=useState<string|null>(null)
   const [createSector,setCreateSector]=useState(false)
   const [createBeach,setCreateBeach]=useState(false)
+  const [periodBeach,setPeriodBeach]=useState<Beach|null>(null)
   const [search,setSearch]=useState('')
+  const [viewRole,setViewRole]=useState<Role>(()=>profile.role==='admin'&&sessionStorage.getItem('vigi-view-role')==='chief'?'chief':profile.role)
 
+  const effectiveRole=profile.role==='admin'?viewRole:profile.role
+  const canCreateSector=profile.role==='admin'&&effectiveRole==='admin'
+  const canManageBeaches=['admin','chief','assistant'].includes(effectiveRole)
   const notify=useCallback((text:string)=>{setToast(text);window.setTimeout(()=>setToast(null),2800)},[])
+  const switchRole=(role:'admin'|'chief')=>{setViewRole(role);sessionStorage.setItem('vigi-view-role',role);setView('dashboard');notify(`Mode ${roleLabels[role]} activé`)}
+  const formatDate=(value:string)=>new Intl.DateTimeFormat('fr-FR',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(`${value}T12:00:00`))
+
   const loadData=useCallback(async()=>{
     setLoading(true)
-    const [sectorRes,beachRes,profileRes,campaignRes,assignmentRes]=await Promise.all([
+    const [sectorRes,beachRes,periodRes,profileRes,campaignRes,assignmentRes]=await Promise.all([
       supabase.from('sectors').select('id,name,description').order('name'),
-      supabase.from('beaches').select('id,sector_id,name,location,required_crew,promenade_places').order('name'),
+      supabase.from('beaches').select('id,sector_id,name,location,weekday_required_crew,weekend_required_crew,chief_positions').order('name'),
+      supabase.from('staffing_periods').select('id,beach_id,label,start_on,end_on,required_crew,chief_positions').order('start_on'),
       supabase.from('profiles').select('user_id,email,display_name,phone,role,must_set_password').order('display_name'),
       supabase.from('campaigns').select('*',{count:'exact',head:true}),
       supabase.from('assignments').select('*',{count:'exact',head:true}),
     ])
-    setSectors((sectorRes.data||[]) as Sector[]);setBeaches((beachRes.data||[]) as Beach[]);setProfiles((profileRes.data||[]) as Profile[])
-    setCampaignCount(campaignRes.count||0);setAssignmentCount(assignmentRes.count||0);setLoading(false)
+    setSectors((sectorRes.data||[]) as Sector[])
+    setBeaches((beachRes.data||[]) as Beach[])
+    setStaffingPeriods((periodRes.data||[]) as StaffingPeriod[])
+    setProfiles((profileRes.data||[]) as Profile[])
+    setCampaignCount(campaignRes.count||0)
+    setAssignmentCount(assignmentRes.count||0)
+    setLoading(false)
   },[])
   useEffect(()=>{void loadData()},[loadData])
 
@@ -173,10 +205,15 @@ function AppShell({session,profile,onProfileRefresh}:{session:Session;profile:Pr
     if(error) throw error
     setCreateSector(false);notify('Secteur créé');await loadData()
   }
-  async function addBeach(sectorId:string,name:string,location:string,required:number,promenade:number){
-    const {error}=await supabase.from('beaches').insert({sector_id:sectorId,name,location:location||null,required_crew:required,promenade_places:promenade})
+  async function addBeach(sectorId:string,name:string,location:string,weekday:number,weekend:number){
+    const {error}=await supabase.from('beaches').insert({sector_id:sectorId,name,location:location||null,weekday_required_crew:weekday,weekend_required_crew:weekend,chief_positions:1})
     if(error) throw error
-    setCreateBeach(false);notify('Plage créée');await loadData()
+    setCreateBeach(false);notify('Plage et effectifs créés');await loadData()
+  }
+  async function addStaffingPeriod(beachId:string,label:string,startOn:string,endOn:string,required:number){
+    const {error}=await supabase.from('staffing_periods').insert({beach_id:beachId,label:label||null,start_on:startOn,end_on:endOn,required_crew:required,chief_positions:1})
+    if(error) throw error
+    setPeriodBeach(null);notify('Effectif de période créé');await loadData()
   }
   async function exportAvailability(){
     const {data,error}=await supabase.from('availabilities').select('available_on,status,comment,submitted_at,profiles(email,display_name),campaigns(title)')
@@ -188,22 +225,35 @@ function AppShell({session,profile,onProfileRefresh}:{session:Session;profile:Pr
 
   function content(){
     if(loading)return <div className="loading"><RefreshCw className="spin"/> Chargement sécurisé…</div>
-    if(view==='dashboard')return <><PageTitle eyebrow="TABLEAU DE BORD" title={`Bonjour ${profile.display_name||profile.email.split('@')[0]}.`} text="Votre espace Vigi Sector est prêt à être configuré."/><section className="metrics"><article><span><MapPinned/></span><strong>{sectors.length}</strong><small>secteur{sectors.length>1?'s':''}</small></article><article><span><Waves/></span><strong>{beaches.length}</strong><small>plage{beaches.length>1?'s':''}</small></article><article><span><Users/></span><strong>{profiles.length}</strong><small>profil{profiles.length>1?'s':''}</small></article><article><span><CalendarDays/></span><strong>{campaignCount}</strong><small>campagne{campaignCount>1?'s':''}</small></article></section>{sectors.length===0&&<EmptyState icon={MapPinned} title="Commencez par créer un secteur" text="La base est volontairement vide. Ajoutez votre premier secteur, puis ses plages et ses équipiers." action={profile.role==='admin'?<button className="primary compact" onClick={()=>setCreateSector(true)}><Plus size={17}/> Créer le premier secteur</button>:undefined}/>}</>
-    if(view==='sectors')return <><PageTitle eyebrow="ORGANISATION" title="Secteurs et plages" text="Structurez le littoral sans données de démonstration." action={profile.role==='admin'?<div className="page-actions"><button onClick={()=>setCreateSector(true)}><Plus size={17}/> Secteur</button><button className="primary" onClick={()=>setCreateBeach(true)} disabled={!sectors.length}><Plus size={17}/> Plage</button></div>:undefined}/>{sectors.length===0?<EmptyState icon={MapPinned} title="Aucun secteur" text="Créez votre premier secteur pour commencer."/>:<section className="sector-grid">{sectors.map(s=><article key={s.id}><header><span>{s.name.slice(0,1).toUpperCase()}</span><div><h3>{s.name}</h3><p>{s.description||'Aucune description'}</p></div></header><div className="beach-list">{beaches.filter(b=>b.sector_id===s.id).map(b=><div key={b.id}><Waves size={18}/><span><b>{b.name}</b><small>{b.location||'Localisation à compléter'} · {b.required_crew} équipier{b.required_crew>1?'s':''} · {b.promenade_places} promenade</small></span><ChevronRight size={17}/></div>)}{!beaches.some(b=>b.sector_id===s.id)&&<p className="muted">Aucune plage créée</p>}</div></article>)}</section>}</>
+    if(view==='dashboard')return <>
+      <PageTitle eyebrow="TABLEAU DE BORD" title={`Bonjour ${profile.display_name||profile.email.split('@')[0]}.`} text={`Vous consultez Vigi Sector en mode ${roleLabels[effectiveRole]}.`} action={profile.role==='admin'?<RoleSwitch value={effectiveRole as 'admin'|'chief'} onChange={switchRole}/>:undefined}/>
+      <section className="metrics"><article><span><MapPinned/></span><strong>{sectors.length}</strong><small>secteur{sectors.length>1?'s':''}</small></article><article><span><Waves/></span><strong>{beaches.length}</strong><small>plage{beaches.length>1?'s':''}</small></article><article><span><Users/></span><strong>{profiles.length}</strong><small>profil{profiles.length>1?'s':''}</small></article><article><span><CalendarDays/></span><strong>{campaignCount}</strong><small>campagne{campaignCount>1?'s':''}</small></article></section>
+      {sectors.length===0&&<EmptyState icon={MapPinned} title="Commencez par créer un secteur" text="Ajoutez votre premier secteur, puis ses plages et ses équipiers." action={canCreateSector?<button className="primary compact" onClick={()=>setCreateSector(true)}><Plus size={17}/> Créer le premier secteur</button>:undefined}/>} 
+    </>
+    if(view==='sectors')return <>
+      <PageTitle eyebrow="ORGANISATION" title="Secteurs et plages" text="Définissez les effectifs de semaine, de week-end et les périodes particulières." action={(canCreateSector||canManageBeaches)?<div className="page-actions">{canCreateSector&&<button onClick={()=>setCreateSector(true)}><Plus size={17}/> Secteur</button>}{canManageBeaches&&<button className="primary" onClick={()=>setCreateBeach(true)} disabled={!sectors.length}><Plus size={17}/> Plage</button>}</div>:undefined}/>
+      {sectors.length===0?<EmptyState icon={MapPinned} title="Aucun secteur" text="Basculez en mode Administrateur pour créer le premier secteur."/>:<section className="sector-grid">{sectors.map(s=><article key={s.id}><header><span>{s.name.slice(0,1).toUpperCase()}</span><div><h3>{s.name}</h3><p>{s.description||'Aucune description'}</p></div></header><div className="beach-list">{beaches.filter(b=>b.sector_id===s.id).map(b=>{
+        const periods=staffingPeriods.filter(p=>p.beach_id===b.id)
+        return <div className="beach-item" key={b.id}><div className="beach-title"><Waves size={20}/><span><b>{b.name}</b><small>{b.location||'Localisation à compléter'}</small></span></div><div className="staffing-grid"><span><small>LUNDI–VENDREDI</small><b>{b.weekday_required_crew} équipier{b.weekday_required_crew>1?'s':''} + {b.chief_positions} chef de poste</b></span><span><small>SAMEDI–DIMANCHE</small><b>{b.weekend_required_crew} équipier{b.weekend_required_crew>1?'s':''} + {b.chief_positions} chef de poste</b></span></div>{periods.length>0&&<div className="period-list">{periods.map(p=><span key={p.id}><CalendarRange size={16}/><b>{p.label||'Période spécifique'}</b><small>{formatDate(p.start_on)} → {formatDate(p.end_on)} · {p.required_crew} équipier{p.required_crew>1?'s':''} + {p.chief_positions} chef de poste</small></span>)}</div>}{canManageBeaches&&<button className="period-add" onClick={()=>setPeriodBeach(b)}><Plus size={15}/> Effectif sur une période</button>}</div>
+      })}{!beaches.some(b=>b.sector_id===s.id)&&<p className="muted">Aucune plage créée</p>}</div></article>)}</section>}
+    </>
     if(view==='team')return <><PageTitle eyebrow="ÉQUIPE" title={`${profiles.length} profil${profiles.length>1?'s':''}`} text="Comptes vérifiés et rattachés au domaine SDIS 76." action={<button className="primary" onClick={exportAvailability}><Download size={17}/> Exporter les disponibilités</button>}/><div className="toolbar"><label><Search size={18}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher un profil…"/></label></div><section className="team-grid">{filteredProfiles.map(p=><article key={p.user_id}><span className="avatar">{(p.display_name||p.email).split(/[ .@]/).slice(0,2).map(x=>x[0]).join('').toUpperCase()}</span><div><h3>{p.display_name||'Profil à compléter'}</h3><p>{p.email}</p><small>{roleLabels[p.role]}</small></div><i>{p.must_set_password?'Première connexion':'Actif'}</i></article>)}</section></>
     if(view==='availability')return <><PageTitle eyebrow="RECENSEMENT" title="Disponibilités" text="Les non-saisies seront considérées comme indisponibles."/><EmptyState icon={CalendarDays} title="Aucune campagne ouverte" text="Le chef de secteur pourra créer une campagne dès qu’un secteur sera configuré."/></>
-    if(view==='planning')return <><PageTitle eyebrow="AFFECTATIONS" title="Planning des plages" text="Un chef de poste, les équipiers requis et une place promenade par plage."/><EmptyState icon={ShieldCheck} title="Aucune affectation" text={`${assignmentCount} affectation enregistrée. Créez d’abord les secteurs, les plages et une campagne.`}/></>
-    return <><PageTitle eyebrow="SÉCURITÉ" title="Mon profil" text="Les sessions restent indépendantes sur chaque appareil."/><section className="settings-card"><div><span><Users/></span><p><b>{profile.display_name||'Nom à compléter'}</b><small>{profile.email} · {roleLabels[profile.role]}</small></p></div><ProfileName profile={profile} onSaved={()=>{onProfileRefresh();loadData();notify('Profil mis à jour')}}/><div className="security-note"><ShieldCheck/><p><b>Multi-connexion active</b><small>Vous pouvez rester connecté simultanément sur votre téléphone, votre tablette et votre ordinateur. La déconnexion ci-dessous concerne uniquement cet appareil.</small></p></div><button className="logout" onClick={()=>supabase.auth.signOut({scope:'local'})}><LogOut size={17}/> Se déconnecter de cet appareil</button></section></>
+    if(view==='planning')return <><PageTitle eyebrow="AFFECTATIONS" title="Planning des plages" text="Chaque plage prévoit un chef de poste et les équipiers requis selon le jour ou la période."/><EmptyState icon={ShieldCheck} title="Aucune affectation" text={`${assignmentCount} affectation enregistrée. Créez d’abord les secteurs, les plages et une campagne.`}/></>
+    return <><PageTitle eyebrow="SÉCURITÉ" title="Mon profil" text="Les sessions restent indépendantes sur chaque appareil."/><section className="settings-card"><div><span><Users/></span><p><b>{profile.display_name||'Nom à compléter'}</b><small>{profile.email} · {roleLabels[profile.role]}</small></p></div>{profile.role==='admin'&&<section className="role-panel"><div><b>Profil d’utilisation</b><small>Vos droits administrateur restent actifs pendant la bascule.</small></div><RoleSwitch value={effectiveRole as 'admin'|'chief'} onChange={switchRole}/></section>}<ProfileName profile={profile} onSaved={()=>{onProfileRefresh();loadData();notify('Profil mis à jour')}}/><div className="security-note"><ShieldCheck/><p><b>Multi-connexion active</b><small>Vous pouvez rester connecté simultanément sur votre téléphone, votre tablette et votre ordinateur. La déconnexion ci-dessous concerne uniquement cet appareil.</small></p></div><button className="logout" onClick={()=>supabase.auth.signOut({scope:'local'})}><LogOut size={17}/> Se déconnecter de cet appareil</button></section></>
   }
 
   return <div className="app-shell">
     <div className="ambient one"/><div className="ambient two"/>
-    <header><button className="brand" onClick={()=>setView('dashboard')}><img src="/vigi-logo.png" alt=""/><span><b>VIGI</b><small>SECTOR</small></span></button><div className="header-status"><i/><span><small>ENVIRONNEMENT SÉCURISÉ</small><b>{sectors[0]?.name||'Configuration initiale'}</b></span></div><div className="header-user"><span className="avatar small">{(profile.display_name||profile.email)[0].toUpperCase()}</span><div><small>{roleLabels[profile.role]}</small><b>{profile.display_name||profile.email}</b></div><button onClick={()=>setMobileMenu(v=>!v)}><Menu/></button></div></header>
-    <aside className={mobileMenu?'open':''}><div className="aside-head"><span>NAVIGATION</span><button onClick={()=>setMobileMenu(false)}><X/></button></div>{nav.map(item=><button key={item.id} className={view===item.id?'active':''} onClick={()=>{setView(item.id);setMobileMenu(false)}}><item.icon/><span>{item.label}</span></button>)}<div className="aside-footer"><ShieldCheck/><span><b>Supabase Auth</b><small>Session chiffrée</small></span></div></aside>
+    <header><button className="brand" onClick={()=>setView('dashboard')}><img src="/vigi-logo.png" alt=""/><span><b>VIGI</b><small>SECTOR</small></span></button><div className="header-status"><i/><span><small>ENVIRONNEMENT SÉCURISÉ</small><b>{sectors[0]?.name||'Configuration initiale'}</b></span></div><div className="header-user"><span className="avatar small">{(profile.display_name||profile.email)[0].toUpperCase()}</span><div><small>{roleLabels[effectiveRole]}</small><b>{profile.display_name||profile.email}</b></div><button onClick={()=>setMobileMenu(v=>!v)}><Menu/></button></div></header>
+    <aside className={mobileMenu?'open':''}><div className="aside-head"><span>NAVIGATION</span><button onClick={()=>setMobileMenu(false)}><X/></button></div>{nav.map(item=><button key={item.id} className={view===item.id?'active':''} onClick={()=>{setView(item.id);setMobileMenu(false)}}><item.icon/><span>{item.label}</span></button>)}<div className="aside-footer"><ShieldCheck/><span><b>{roleLabels[effectiveRole]}</b><small>Droits sécurisés</small></span></div></aside>
     {mobileMenu&&<button className="backdrop" onClick={()=>setMobileMenu(false)} aria-label="Fermer le menu"/>}
     <main className="workspace">{content()}</main>
     <nav className="mobile-dock">{nav.slice(0,5).map(item=><button key={item.id} className={view===item.id?'active':''} onClick={()=>setView(item.id)}><item.icon/><small>{item.label}</small></button>)}</nav>
-    {createSector&&<SectorModal close={()=>setCreateSector(false)} submit={addSector}/>} {createBeach&&<BeachModal sectors={sectors} close={()=>setCreateBeach(false)} submit={addBeach}/>} {toast&&<div className="toast"><ShieldCheck size={18}/>{toast}</div>}
+    {createSector&&<SectorModal close={()=>setCreateSector(false)} submit={addSector}/>} 
+    {createBeach&&<BeachModal sectors={sectors} close={()=>setCreateBeach(false)} submit={addBeach}/>} 
+    {periodBeach&&<StaffingPeriodModal beach={periodBeach} close={()=>setPeriodBeach(null)} submit={addStaffingPeriod}/>} 
+    {toast&&<div className="toast"><ShieldCheck size={18}/>{toast}</div>}
   </div>
 }
 
@@ -211,7 +261,30 @@ function PageTitle({eyebrow,title,text,action}:{eyebrow:string;title:string;text
 
 function SectorModal({close,submit}:{close:()=>void;submit:(name:string,description:string)=>Promise<void>}){const[name,setName]=useState('');const[description,setDescription]=useState('');const[error,setError]=useState<string|null>(null);const[busy,setBusy]=useState(false);return <div className="modal-layer" onMouseDown={e=>e.target===e.currentTarget&&close()}><form className="modal" onSubmit={async e=>{e.preventDefault();setBusy(true);try{await submit(name,description)}catch(x){setError(x instanceof Error?x.message:'Erreur')}finally{setBusy(false)}}}><header><div><span>NOUVEAU SECTEUR</span><h2>Créer un secteur</h2></div><button type="button" onClick={close}><X/></button></header><label><span>NOM</span><input value={name} onChange={e=>setName(e.target.value)} required placeholder="Ex. Littoral Ouest"/></label><label><span>DESCRIPTION</span><textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Périmètre et communes concernées"/></label>{error&&<div className="auth-error">{error}</div>}<button className="primary" disabled={busy}>{busy?'Création…':'Créer le secteur'}</button></form></div>}
 
-function BeachModal({sectors,close,submit}:{sectors:Sector[];close:()=>void;submit:(sectorId:string,name:string,location:string,required:number,promenade:number)=>Promise<void>}){const[sector,setSector]=useState(sectors[0]?.id||'');const[name,setName]=useState('');const[location,setLocation]=useState('');const[required,setRequired]=useState(2);const[promenade,setPromenade]=useState(1);const[error,setError]=useState<string|null>(null);const[busy,setBusy]=useState(false);return <div className="modal-layer" onMouseDown={e=>e.target===e.currentTarget&&close()}><form className="modal" onSubmit={async e=>{e.preventDefault();setBusy(true);try{await submit(sector,name,location,required,promenade)}catch(x){setError(x instanceof Error?x.message:'Erreur')}finally{setBusy(false)}}}><header><div><span>NOUVELLE PLAGE</span><h2>Créer une plage</h2></div><button type="button" onClick={close}><X/></button></header><label><span>SECTEUR</span><select value={sector} onChange={e=>setSector(e.target.value)}>{sectors.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label><label><span>NOM DE LA PLAGE</span><input value={name} onChange={e=>setName(e.target.value)} required/></label><label><span>LOCALISATION</span><input value={location} onChange={e=>setLocation(e.target.value)}/></label><div className="form-row"><label><span>ÉQUIPIERS REQUIS</span><select value={required} onChange={e=>setRequired(Number(e.target.value))}>{[1,2,3].map(n=><option key={n}>{n}</option>)}</select></label><label><span>PLACE PROMENADE</span><select value={promenade} onChange={e=>setPromenade(Number(e.target.value))}>{[0,1,2,3].map(n=><option key={n}>{n}</option>)}</select></label></div>{error&&<div className="auth-error">{error}</div>}<button className="primary" disabled={busy}>{busy?'Création…':'Créer la plage'}</button></form></div>}
+function BeachModal({sectors,close,submit}:{sectors:Sector[];close:()=>void;submit:(sectorId:string,name:string,location:string,weekday:number,weekend:number)=>Promise<void>}){
+  const[sector,setSector]=useState(sectors[0]?.id||'')
+  const[name,setName]=useState('')
+  const[location,setLocation]=useState('')
+  const[weekday,setWeekday]=useState(2)
+  const[weekend,setWeekend]=useState(2)
+  const[error,setError]=useState<string|null>(null)
+  const[busy,setBusy]=useState(false)
+  return <div className="modal-layer" onMouseDown={e=>e.target===e.currentTarget&&close()}><form className="modal" onSubmit={async e=>{e.preventDefault();setBusy(true);try{await submit(sector,name,location,weekday,weekend)}catch(x){setError(x instanceof Error?x.message:'Erreur')}finally{setBusy(false)}}}><header><div><span>NOUVELLE PLAGE</span><h2>Créer une plage</h2></div><button type="button" onClick={close}><X/></button></header><label><span>SECTEUR</span><select value={sector} onChange={e=>setSector(e.target.value)}>{sectors.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label><label><span>NOM DE LA PLAGE</span><input value={name} onChange={e=>setName(e.target.value)} required/></label><label><span>LOCALISATION</span><input value={location} onChange={e=>setLocation(e.target.value)}/></label><div className="chief-fixed"><ShieldCheck size={19}/><span><b>1 chef de poste</b><small>Obligatoire pour chaque ouverture de plage</small></span></div><div className="form-row"><label><span>ÉQUIPIERS · LUNDI–VENDREDI</span><select value={weekday} onChange={e=>setWeekday(Number(e.target.value))}>{[1,2,3].map(n=><option key={n}>{n}</option>)}</select></label><label><span>ÉQUIPIERS · SAMEDI–DIMANCHE</span><select value={weekend} onChange={e=>setWeekend(Number(e.target.value))}>{[1,2,3].map(n=><option key={n}>{n}</option>)}</select></label></div>{error&&<div className="auth-error">{error}</div>}<button className="primary" disabled={busy}>{busy?'Création…':'Créer la plage et ses effectifs'}</button></form></div>
+}
+
+function StaffingPeriodModal({beach,close,submit}:{beach:Beach;close:()=>void;submit:(beachId:string,label:string,startOn:string,endOn:string,required:number)=>Promise<void>}){
+  const[label,setLabel]=useState('')
+  const[startOn,setStartOn]=useState('')
+  const[endOn,setEndOn]=useState('')
+  const[required,setRequired]=useState(2)
+  const[error,setError]=useState<string|null>(null)
+  const[busy,setBusy]=useState(false)
+  return <div className="modal-layer" onMouseDown={e=>e.target===e.currentTarget&&close()}><form className="modal" onSubmit={async e=>{e.preventDefault();setError(null);if(endOn<startOn){setError('La date de fin doit être postérieure à la date de début.');return}setBusy(true);try{await submit(beach.id,label,startOn,endOn,required)}catch(x){setError(x instanceof Error?x.message:'Erreur')}finally{setBusy(false)}}}><header><div><span>EFFECTIF TEMPORAIRE</span><h2>{beach.name}</h2></div><button type="button" onClick={close}><X/></button></header><p className="modal-intro">Cet effectif remplace les valeurs habituelles pendant toute la période choisie.</p><label><span>NOM DE LA PÉRIODE</span><input value={label} onChange={e=>setLabel(e.target.value)} placeholder="Ex. Vacances de juillet"/></label><div className="form-row"><label><span>DU</span><input type="date" value={startOn} onChange={e=>setStartOn(e.target.value)} required/></label><label><span>AU</span><input type="date" value={endOn} min={startOn} onChange={e=>setEndOn(e.target.value)} required/></label></div><div className="chief-fixed"><ShieldCheck size={19}/><span><b>1 chef de poste</b><small>Pour chaque jour de la période</small></span></div><label><span>ÉQUIPIERS REQUIS</span><select value={required} onChange={e=>setRequired(Number(e.target.value))}>{[1,2,3].map(n=><option key={n}>{n}</option>)}</select></label>{error&&<div className="auth-error">{error}</div>}<button className="primary" disabled={busy}>{busy?'Création…':'Créer l’effectif de période'}</button></form></div>
+}
+
+function RoleSwitch({value,onChange}:{value:'admin'|'chief';onChange:(role:'admin'|'chief')=>void}){
+  return <div className="role-switch" aria-label="Profil d’utilisation"><button className={value==='admin'?'active':''} onClick={()=>onChange('admin')} type="button">Administrateur</button><button className={value==='chief'?'active':''} onClick={()=>onChange('chief')} type="button">Chef de secteur</button></div>
+}
 
 function ProfileName({profile,onSaved}:{profile:Profile;onSaved:()=>void}){const[name,setName]=useState(profile.display_name||'');const[busy,setBusy]=useState(false);return <form className="profile-form" onSubmit={async e=>{e.preventDefault();setBusy(true);await supabase.from('profiles').update({display_name:name}).eq('user_id',profile.user_id);setBusy(false);onSaved()}}><label><span>NOM AFFICHÉ</span><input value={name} onChange={e=>setName(e.target.value)} placeholder="Prénom NOM"/></label><button className="primary compact" disabled={busy}>{busy?'Enregistrement…':'Enregistrer'}</button></form>}
 
